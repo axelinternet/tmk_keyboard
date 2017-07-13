@@ -1,5 +1,5 @@
 /*
-Copyright 2015 Jun Wako <wakojun@gmail.com>
+Copyright 2012,2013 Jun Wako <wakojun@gmail.com>
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -14,26 +14,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <stdint.h>
-#include "action_code.h"
-#include "actionmap.h"
+#include "keymap_common.h"
 
-/* Converts key to action */
-__attribute__ ((weak))
-action_t action_for_key(uint8_t layer, keypos_t key)
+
+/* translates key to keycode */
+uint8_t keymap_key_to_keycode(uint8_t layer, keypos_t key)
 {
-    return (action_t)pgm_read_word(&actionmaps[(layer)][(key.row)][(key.col)]);
+    return pgm_read_byte(&keymaps[(layer)][(key.row)][(key.col)]);
 }
 
-/* Macro */
-__attribute__ ((weak))
-const macro_t *action_get_macro(keyrecord_t *record, uint8_t id, uint8_t opt)
+/* translates Fn keycode to action */
+action_t keymap_fn_to_action(uint8_t keycode)
 {
-    return MACRO_NONE;
-}
-
-/* Function */
-__attribute__ ((weak))
-void action_function(keyrecord_t *record, uint8_t id, uint8_t opt)
-{
+    return (action_t){ .code = pgm_read_word(&fn_actions[FN_INDEX(keycode)]) };
 }
